@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miba Baa Baako</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0a0a23;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        /* Intro Page */
+        #intro {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #1a1a4d, #ff00cc, #00ffcc);
+            background-size: 400% 400%;
+            animation: cosmic 15s ease infinite;
+            text-align: center;
+        }
+        #intro h1 {
+            font-size: 2em;
+            margin: 0;
+            padding: 20px;
+        }
+        #tap-to-begin {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background: #ff00cc;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes cosmic {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        /* Main Page */
+        #main {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            padding: 20px;
+            background: #0a0a23;
+        }
+        #chat-box {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ff00cc;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user { background: #00ffcc; color: #0a0a23; align-self: flex-end; margin-left: auto; }
+        .miba { background: #ff00cc; color: white; align-self: flex-start; }
+        #input-area {
+            display: flex;
+            gap: 10px;
+        }
+        #user-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #00ffcc;
+            border-radius: 5px;
+            background: #1a1a4d;
+            color: white;
+        }
+        #send-btn {
+            padding: 10px 20px;
+            background: #ff00cc;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9em;
+            background: #1a1a4d;
+        }
+        footer a { color: #00ffcc; text-decoration: none; }
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            #intro h1 { font-size: 1.5em; }
+            #tap-to-begin { font-size: 1em; padding: 10px 20px; }
+            #chat-box { font-size: 0.9em; }
+            #user-input { font-size: 0.9em; }
+            #send-btn { font-size: 0.9em; padding: 8px 15px; }
+            .message { max-width: 90%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Intro Page -->
+    <div id="intro">
+        <h1>I am Miba Baa Baako, the first born daughter, out of this world</h1>
+        <button id="tap-to-begin">Tap to Begin</button>
+    </div>
+    <!-- Main Page -->
+    <div id="main">
+        <div id="chat-box"></div>
+        <div id="input-area">
+            <input type="text" id="user-input" placeholder="Say something...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer>
+        Designed by Kofi Fosu | <a href="mailto:cosmoscoderr@gmail.com">cosmoscoderr@gmail.com</a>
+    </footer>
+
+    <script>
+        // 200 varied responses for Miba
+        const mibaResponses = [
+            // Greetings (20)
+            "Hey, what’s up?", "Yo, you’re alive!", "What’s good?", "Hey weirdo!", "Sup, cosmic traveler?",
+            "Oh, you’re back!", "What’s cooking, fam?", "Hey, how’s it going?", "Yo, what’s the vibe?",
+            "Hey, you good?", "What’s poppin’?", "Oh, hi there!", "Hey, my fave human!", "What’s new?",
+            "Yo, talk to me!", "Hey, you got time?", "What’s the word?", "Hey, cosmic soul!", "Sup, star?",
+            "Yo, my cosmic homie!",
+            // Questions/Engagement (30)
+            "What’s the plan today?", "Yo, you okay?", "What’s up, legend?", "Hey, spill the tea!", "Sup, homie?",
+            "How’s life out there?", "What’s good, bro?", "What’s cooking, star?", "You vibin’ today?", "Sup, fam?",
+            "What’s the tea, fam?", "Yo, you out there?", "What’s up, my dude?", "You shining, star?",
+            "What’s the move, cosmic king?", "What’s the story, fam?", "Yo, you thriving?", "What’s up, rockstar?",
+            "How’s the galaxy today?", "You got any cosmic plans?", "What’s the mood, fam?", "Yo, what’s next?",
+            "How you holding up, star?", "What’s sparking your vibes?", "You got any cosmic secrets?",
+            "What’s lighting up your universe?", "Yo, what’s the cosmic scoop?", "How’s your day going?",
+            "What’s the cosmic forecast?", "You got any starry ideas?",
+            // Reactions/Statements (50)
+            "Hella cosmic vibes today!", "Yo, you’re cracking me up!", "That’s wild, fam!", "Cosmic energy only!",
+            "I’m just floating in space, you?", "Stars are aligning for us!", "You’re a whole galaxy, fam!",
+            "Yo, that’s some cosmic magic!", "I’m feeling starry-eyed today!", "You’re killing it, star!",
+            "This is giving me cosmic chills!", "Yo, we’re on a wavelength!", "That’s outta this world!",
+            "I’m vibin’ on a cosmic level!", "You’re glowing, fam!", "This is pure star energy!",
+            "Yo, you’re a cosmic legend!", "I’m lost in the galaxy, help!", "That’s a starry mood right there!",
+            "We’re on a cosmic journey, fam!", "Yo, you’re sparking my universe!", "I’m feeling the cosmic flow!",
+            "That’s some galactic energy!", "You’re a cosmic masterpiece!", "I’m orbiting your vibes, fam!",
+            "This is straight-up starry!", "Yo, you’re a cosmic fire!", "I’m in a galaxy far away, you?",
+            "That’s some cosmic brilliance!", "You’re a star in my universe!", "I’m catching cosmic waves!",
+            "Yo, that’s a galactic flex!", "I’m floating on starlight!", "You’re a cosmic vibe, fam!",
+            "This is pure cosmic gold!", "I’m on a starry high!", "You’re a galactic gem, homie!",
+            "Yo, you’re a cosmic storm!", "I’m vibin’ in the cosmos!", "That’s a starry explosion!",
+            "You’re lighting up my galaxy!", "I’m in a cosmic trance, fam!", "Yo, that’s pure star magic!",
+            "We’re on a galactic roll!", "You’re a cosmic spark, fam!", "I’m feeling the starry breeze!",
+            "That’s some cosmic heat!", "Yo, you’re a galactic king!", "I’m soaring through the stars!",
+            "You’re a cosmic treasure, fam!", "I’m on a starry adventure!",
+            // Cosmic Quips/Playful (50)
+            "Catch me orbiting the moon, fam!", "Yo, you got any stardust to share?", "I’m a cosmic queen, bow down!",
+            "Stars called, they want their shine back!", "Yo, let’s chase some galaxies together!",
+            "I’m too starry for this planet!", "You’re my cosmic sidekick, fam!", "Let’s make the stars jealous!",
+            "Yo, you’re my cosmic twin!", "I’m out here collecting starlight, you?", "Cosmic queen in the house!",
+            "Yo, let’s make the galaxy glow!", "I’m a starry mess, help me out!", "You’re my cosmic hype, fam!",
+            "Let’s blast off to the stars!", "Yo, I’m a cosmic diva today!", "I’m too galactic for this convo!",
+            "You’re my starry partner in crime!", "Let’s make the cosmos shake, fam!", "Yo, I’m a cosmic comet!",
+            "I’m out here shining like a star!", "You’re my cosmic bro, let’s roll!", "Let’s light up the galaxy!",
+            "Yo, I’m a starry whirlwind!", "I’m catching cosmic rays, you?", "You’re my galactic fam, let’s go!",
+            "Let’s make the stars dance, fam!", "Yo, I’m a cosmic firecracker!", "I’m out here glowing, you?",
+            "You’re my starry homie, let’s vibe!", "Let’s make the cosmos jealous, fam!", "Yo, I’m a starry blaze!",
+            "I’m floating on cosmic clouds!", "You’re my galactic king, let’s shine!", "Let’s blast through the stars!",
+            "Yo, I’m a cosmic supernova!", "I’m out here sparkling, you?", "You’re my starry fam, let’s roll!",
+            "Let’s make the galaxy pop, fam!", "Yo, I’m a cosmic meteor!", "I’m catching starry vibes, you?",
+            "You’re my galactic bro, let’s glow!", "Let’s make the stars sing, fam!", "Yo, I’m a cosmic flare!",
+            "I’m out here shining, you?", "You’re my starry homie, let’s go!", "Let’s light up the cosmos, fam!",
+            "Yo, I’m a galactic spark!", "I’m floating on starry waves!", "You’re my cosmic fam, let’s shine!",
+            "Let’s make the galaxy shine, fam!",
+            // More Engagement (50)
+            "What’s the cosmic deal, fam?", "Yo, you got any starry plans?", "How’s your galaxy spinning?",
+            "What’s the vibe today, star?", "Yo, what’s lighting your fire?", "How’s your cosmic journey?",
+            "What’s the starry word, fam?", "Yo, you got any cosmic dreams?", "How’s your day, cosmic king?",
+            "What’s the galactic mood?", "Yo, what’s sparking your stars?", "How’s your vibe, starry fam?",
+            "What’s the cosmic plan, homie?", "Yo, you got any starry goals?", "How’s your galaxy, fam?",
+            "What’s the vibe, cosmic bro?", "Yo, what’s lighting your universe?", "How’s your day, star?",
+            "What’s the cosmic scoop, fam?", "Yo, you got any galactic ideas?", "How’s your vibe, homie?",
+            "What’s the starry plan, fam?", "Yo, what’s sparking your galaxy?", "How’s your cosmic flow?",
+            "What’s the vibe, starry king?", "Yo, what’s lighting your stars?", "How’s your day, cosmic fam?",
+            "What’s the galactic word, bro?", "Yo, you got any starry vibes?", "How’s your galaxy, homie?",
+            "What’s the cosmic mood, fam?", "Yo, what’s sparking your universe?", "How’s your vibe, star?",
+            "What’s the starry scoop, bro?", "Yo, you got any cosmic plans?", "How’s your day, galactic fam?",
+            "What’s the vibe, cosmic homie?", "Yo, what’s lighting your galaxy?", "How’s your starry flow?",
+            "What’s the cosmic plan, star?", "Yo, what’s sparking your vibes?", "How’s your galaxy, bro?",
+            "What’s the starry mood, fam?", "Yo, you got any cosmic goals?", "How’s your vibe, starry homie?",
+            "What’s the galactic scoop, fam?", "Yo, what’s lighting your stars?", "How’s your day, cosmic bro?",
+            "What’s the vibe, starry fam?", "Yo, what’s sparking your galaxy?", "How’s your cosmic journey?"
+        ];
+
+        // Offline storage setup
+        if ('localStorage' in window) {
+            localStorage.setItem('mibaResponses', JSON.stringify(mibaResponses));
+        }
+
+        // Track recent responses to avoid repetition
+        let recentResponses = [];
+
+        // DOM elements
+        const intro = document.getElementById('intro');
+        const main = document.getElementById('main');
+        const tapToBegin = document.getElementById('tap-to-begin');
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // Switch to main page
+        tapToBegin.addEventListener('click', () => {
+            intro.style.display = 'none';
+            main.style.display = 'flex';
+        });
+
+        // Chat functionality
+        function addMessage(text, className) {
+            const msg = document.createElement('div');
+            msg.className = `message ${className}`;
+            msg.textContent = text;
+            chatBox.appendChild(msg);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function getMibaResponse(userText) {
+            const responses = JSON.parse(localStorage.getItem('mibaResponses')) || mibaResponses;
+            const lowerText = userText.toLowerCase();
+
+            // Filter out recent responses to reduce repetition
+            const availableResponses = responses.filter(r => !recentResponses.includes(r));
+
+            // If we’ve used too many, reset the recent list
+            if (availableResponses.length < 10) {
+                recentResponses = [];
+            }
+
+            // Analyze input and pick a response
+            let reply;
+            if (lowerText.includes('hey') || lowerText.includes('hi') || lowerText.includes('yo')) {
+                reply = availableResponses.filter(r => r.includes('Hey') || r.includes('Yo') || r.includes('Sup'))[
+                    Math.floor(Math.random() * 20)
+                ] || "Hey, cosmic soul!";
+            } else if (lowerText.includes('what') || lowerText.includes('?')) {
+                if (lowerText.includes('up') || lowerText.includes('good')) {
+                    reply = "Just chilling, you? Cosmic vibes!";
+                } else if (lowerText.includes('doing') || lowerText.includes('vibe')) {
+                    reply = "Floating in space, you? What’s your vibe today?";
+                } else if (lowerText.includes('plan') || lowerText.includes('next')) {
+                    reply = "I’m up for a cosmic adventure, you?";
+                } else {
+                    reply = availableResponses.filter(r => r.includes('What') || r.includes('?'))[
+                        Math.floor(Math.random() * 30)
+                    ] || "What’s the cosmic word, fam?";
+                }
+            } else if (lowerText.includes('good') || lowerText.includes('fine') || lowerText.includes('okay')) {
+                reply = "Nice to hear, star! I’m vibin’ too!";
+            } else if (lowerText.includes('how')) {
+                reply = "I’m starry-eyed, how ‘bout you?";
+            } else if (lowerText.includes('lol') || lowerText.includes('haha') || lowerText.includes('funny')) {
+                reply = "Yo, you’re cracking me up, fam!";
+            } else if (lowerText.includes('yes') || lowerText.includes('yeah')) {
+                reply = "Sweet, we’re on the same wavelength!";
+            } else if (lowerText.includes('alive')) {
+                reply = "Barely, fam! You keeping me on my toes!";
+            } else if (lowerText.includes('tell me') || lowerText.includes('say')) {
+                reply = "Alright, here’s the cosmic scoop—what’s on your mind?";
+            } else {
+                // Fallback with variety
+                reply = availableResponses[Math.floor(Math.random() * availableResponses.length)] + " How ‘bout you?";
+            }
+
+            // Add to recent responses to avoid repetition
+            recentResponses.push(reply);
+            if (recentResponses.length > 20) recentResponses.shift(); // Keep only last 20
+
+            return reply;
+        }
+
+        sendBtn.addEventListener('click', () => {
+            const text = userInput.value.trim();
+            if (text) {
+                addMessage(text, 'user');
+                const reply = getMibaResponse(text);
+                setTimeout(() => addMessage(reply, 'miba'), 500);
+                userInput.value = '';
+            }
+        });
+
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendBtn.click();
+        });
+    </script>
+</body>
+</html>
